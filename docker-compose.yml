@@ -1,5 +1,6 @@
 services:
   hsa:
+    image: saphirox/hsa-es-autocomplete:1.0.0
     container_name: hsa
     build:
       context: api
@@ -14,6 +15,7 @@ services:
 
   populator:
     container_name: populator
+    image: saphirox/populator:1.0.0
     build:
       context: populator
       target: builder
