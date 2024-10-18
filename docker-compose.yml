@@ -1,0 +1,47 @@
+services:
+  hsa:
+    container_name: hsa
+    build:
+      context: api
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - FLASK_SERVER_PORT=9091
+    volumes:
+      - ./api:/src
+    networks:
+      - backend
+
+  populator:
+    container_name: populator
+    build:
+      context: populator
+      target: builder
+    stop_signal: SIGINT
+    volumes:
+      - ./populator:/src
+    networks:
+      - backend
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    container_name: es-autocomplete
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  esdata:
